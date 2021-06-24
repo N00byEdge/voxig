@@ -32,7 +32,6 @@ pub fn findTexture(comptime tag: anytype) *const Texture {
 
 pub const Texture = struct {
     index: comptime_int,
-    texture_coord: comptime_float,
     name: comptime []const u8,
 };
 
@@ -54,7 +53,6 @@ const textures = {
     inline for (@typeInfo(@TypeOf(atlas_texture_list)).Struct.fields) |decl, i| {
         result = result ++ [1]Texture{.{
             .index = i,
-            .texture_coord = @as(f32, i) + 0.5,
             .name = decl.name,
         }};
     }
