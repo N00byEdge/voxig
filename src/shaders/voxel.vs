@@ -96,7 +96,7 @@ void main() {
     ivec3 int_pos = face_position.xyz /* + chunk_pos */;
     int attrib = face_position.w;
     int direction = attrib & 0xFF;
-    int texture = (attrib >> 8) % 0xFF;
+    int texture = (attrib >> 8) & 0xFF;
 
     //int_pos += int_translation;
 
