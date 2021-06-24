@@ -16,12 +16,12 @@ out vec3 shaded_text_coord;
 
 const vec3 vert_deltas[8] = vec3[8](
     vec3(0.0, 0.0, 0.0), //bottom_west_south
-    vec3(0.0, 0.0, 1.0), //bottom_west_north
-    vec3(0.0, 1.0, 0.0), //top_west_south
-    vec3(0.0, 1.0, 1.0), //top_west_north
-    vec3(1.0, 0.0, 0.0), //bottom_east_south
-    vec3(1.0, 0.0, 1.0), //bottom_east_north
-    vec3(1.0, 1.0, 0.0), //top_east_south
+    vec3(1.0, 0.0, 0.0), //bottom_west_north
+    vec3(0.0, 0.0, 1.0), //top_west_south
+    vec3(1.0, 0.0, 1.0), //top_west_north
+    vec3(0.0, 1.0, 0.0), //bottom_east_south
+    vec3(1.0, 1.0, 0.0), //bottom_east_north
+    vec3(0.0, 1.0, 1.0), //top_east_south
     vec3(1.0, 1.0, 1.0)  //top_east_north
 );
 
