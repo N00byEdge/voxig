@@ -25,12 +25,25 @@ pub fn loop(game_window: anytype) !void {
     const atlas = textures.init();
 
     var mesh_builder: @import("chunk_mesh.zig").ChunkMeshBuilder = undefined;
-    try mesh_builder.init(std.heap.page_allocator, 1);
+    try mesh_builder.init(std.heap.page_allocator, 2);
     defer mesh_builder.deinit(std.heap.page_allocator);
 
     @import("blocks/blocks.zig").findBlock(.grass).block_type.addToMesh(.{
         .mesh = &mesh_builder,
         .x = 0,
+        .y = 0,
+        .z = 0,
+        .draw_top = true,
+        .draw_bottom = true,
+        .draw_north = true,
+        .draw_south = true,
+        .draw_west = true,
+        .draw_east = true,
+    });
+
+    @import("blocks/blocks.zig").findBlock(.barrier).block_type.addToMesh(.{
+        .mesh = &mesh_builder,
+        .x = 2,
         .y = 0,
         .z = 0,
         .draw_top = true,

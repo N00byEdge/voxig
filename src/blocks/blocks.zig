@@ -124,6 +124,7 @@ const block_list = .{
     .stone = BasicBlockSingleText(.stone),
     .dirt = BasicBlockSingleText(.dirt),
     .grass = BasicBlockTopBottomSides(.grass, .dirt, .grass_side),
+    .barrier = BasicBlockSingleText(.barrier),
     //.iron_ore = BasicBlockSingleText(.iron_ore),
 };
 
