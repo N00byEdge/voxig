@@ -1,20 +1,42 @@
 const Builder = @import("std").build.Builder;
 
 pub fn build(b: *Builder) void {
+    const exe = b.addExecutable("voxig", "src/main.zig");
+
     // Standard target options allows the person running `zig build` to choose
     // what target to build for. Here we do not override the defaults, which
     // means any target is allowed, and the default is native. Other options
     // for restricting supported target set are available.
-    const target = b.standardTargetOptions(.{});
+    exe.setTarget(b.standardTargetOptions(.{}));
 
     // Standard release options allow the person running `zig build` to select
     // between Debug, ReleaseSafe, ReleaseFast, and ReleaseSmall.
-    const mode = b.standardReleaseOptions();
+    exe.setBuildMode(b.standardReleaseOptions());
 
-    const exe = b.addExecutable("voxig", "src/main.zig");
-    exe.setTarget(target);
-    exe.setBuildMode(mode);
     exe.install();
+
+    exe.addPackage(.{
+        .name = "zgl",
+        .path = .{
+            .path = "external/zgl/zgl.zig",
+        },
+    });
+
+    exe.addPackage(.{
+        .name = "config",
+        .path = .{
+            .path = "config.zig",
+        },
+    });
+
+    exe.addIncludeDir("/usr/include");
+
+    exe.linkLibC();
+    exe.linkSystemLibrary("gl");
+    exe.linkSystemLibrary("glfw");
+    exe.linkSystemLibrary("epoxy");
+
+    exe.setMainPkgPath("./");
 
     const run_cmd = exe.run();
     run_cmd.step.dependOn(b.getInstallStep());
