@@ -15,6 +15,12 @@ fn forward(look_x: f32, look_z: f32) glm.Vector(3) {
     });
 }
 
+fn config_key_pressed(window: anytype, comptime tag: anytype) bool {
+    const key_name = @tagName(@field(config.keys, @tagName(tag)));
+    const state = glfw.c.glfwGetKey(window, @field(glfw.c, key_name));
+    return state == glfw.c.GLFW_PRESS;
+}
+
 pub fn loop(game_window: anytype) !void {
     const atlas = textures.init();
 
@@ -46,14 +52,30 @@ pub fn loop(game_window: anytype) !void {
 
     glfw.c.glClearColor(0.1, 0.0, 0.0, 1.0);
 
-    var position = glm.Vector(3).init([_]f32{ 0, 0, 0 });
+    var position = glm.Vector(3).init([_]f32{ 0, -1, 0 });
     var look_z: f32 = 0;
-    var look_x: f32 = 0;
+    var look_x: f32 = @as(f32, std.math.pi) / 2;
 
     while (true) {
-        if (glfw.windowShouldClose(game_window)) {
+        if (glfw.windowShouldClose(game_window) or config_key_pressed(game_window, .quit)) {
             break;
         }
+
+        var vel = glm.Vector(3).init([_]f32{ 0, 0, 0 });
+
+        if (config_key_pressed(game_window, .forward)) vel.values[1] += 1;
+        if (config_key_pressed(game_window, .backward)) vel.values[1] -= 1;
+        if (config_key_pressed(game_window, .left)) vel.values[0] -= 1;
+        if (config_key_pressed(game_window, .right)) vel.values[0] += 1;
+
+        if (vel.values[0] != 0 or vel.values[2] != 0) vel.normalizeAssign();
+
+        if (config_key_pressed(game_window, .down)) vel.values[2] -= 1;
+        if (config_key_pressed(game_window, .up)) vel.values[2] += 1;
+
+        vel.divAssignScalar(20);
+
+        position.addAssign(vel);
 
         const window_size = glfw.getWindowSize(game_window);
         const aspect_ratio = @intToFloat(f32, window_size[0]) / @intToFloat(f32, window_size[1]);
