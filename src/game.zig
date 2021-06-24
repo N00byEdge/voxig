@@ -30,7 +30,7 @@ pub fn loop(game_window: anytype) !void {
 
     @import("blocks/blocks.zig").findBlock(.grass).block_type.addToMesh(.{
         .mesh = &mesh_builder,
-        .x = 0,
+        .x = -1,
         .y = 0,
         .z = 0,
         .draw_top = true,
@@ -43,7 +43,7 @@ pub fn loop(game_window: anytype) !void {
 
     @import("blocks/blocks.zig").findBlock(.barrier).block_type.addToMesh(.{
         .mesh = &mesh_builder,
-        .x = 2,
+        .x = 1,
         .y = 0,
         .z = 0,
         .draw_top = true,
@@ -65,8 +65,8 @@ pub fn loop(game_window: anytype) !void {
 
     glfw.c.glClearColor(0.1, 0.0, 0.0, 1.0);
 
-    var position = glm.Vector(3).init([_]f32{ 0, -1, 0 });
-    var look_z: f32 = 0;
+    var position = glm.Vector(3).init([_]f32{ 0.5, -1.5, 2 });
+    var look_z: f32 = -0.4;
     var look_x: f32 = @as(f32, std.math.pi) / 2;
 
     while (true) {
