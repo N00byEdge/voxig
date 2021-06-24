@@ -108,5 +108,5 @@ void main() {
 
     gl_Position = MVP * vec4(float_pos, 1.0);
 
-    shaded_text_coord = vec3(text_u_vals[face_vert_idx], text_v_vals[face_vert_idx], float(texture) + 0.5);
+    shaded_text_coord = vec3(text_u_vals[face_vert_idx], text_v_vals[face_vert_idx], float(texture));
 }
