@@ -1,6 +1,7 @@
 #version 430
 
 in vec3 shaded_text_coord;
+in float light_intensity;
 
 layout(location = 0) out vec4 color;
 
@@ -11,4 +12,5 @@ void main() {
   if(color.a < 0.5) {
   	discard;
   }
+  color.xyz *= light_intensity;
 }

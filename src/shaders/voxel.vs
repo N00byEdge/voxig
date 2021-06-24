@@ -11,6 +11,8 @@ layout (location = 1) uniform mat4 MVP;
 
 out vec3 shaded_text_coord;
 
+out float light_intensity;
+
 //uniform vec3 float_translation;
 //uniform ivec3 int_translation;
 
@@ -97,6 +99,9 @@ void main() {
     int attrib = face_position.w;
     int direction = attrib & 0xFF;
     int texture = (attrib >> 8) & 0xFF;
+    int int_intensity = (attrib >> 16) & 0xF;
+
+    light_intensity = float(int_intensity) / 15;
 
     //int_pos += int_translation;
 
