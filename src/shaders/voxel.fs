@@ -8,4 +8,7 @@ uniform sampler2DArray texture_sampler;
 
 void main() {
   color = texture(texture_sampler, shaded_text_coord);
+  if(color.a < 0.5) {
+  	discard;
+  }
 }
