@@ -51,7 +51,6 @@ pub const ChunkMeshBuilder = struct {
         result.vao.attribIFormat(0, 4, .int, 0);
         result.vao.attribBinding(0, 0);
         gl.glVertexArrayBindingDivisor(@enumToInt(result.vao), 0, 1);
-        log.info("Divisor error: {}", .{gl.glGetError()});
 
         log.info("Finalized chunk mesh: {any}", .{result});
 
