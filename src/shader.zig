@@ -1,4 +1,5 @@
 const zgl = @import("zgl");
+const glm = @import("glm");
 const std = @import("std");
 
 const log = std.log.scoped(.shader);
@@ -70,5 +71,9 @@ pub const Shader = struct {
 
     pub fn bind(self: *@This()) void {
         self.prog.use();
+    }
+
+    pub fn camera(self: *@This(), cam: glm.Matrix(4)) void {
+        self.prog.uniformMatrix4(1, false, &[_][4][4]f32{cam.values});
     }
 };

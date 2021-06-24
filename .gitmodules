@@ -1,3 +1,6 @@
 [submodule "external/zgl"]
 	path = external/zgl
 	url = https://github.com/ziglibs/zgl.git
+[submodule "external/glm"]
+	path = external/glm
+	url = https://github.com/spx01/glm.git

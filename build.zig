@@ -23,6 +23,13 @@ pub fn build(b: *Builder) void {
     });
 
     exe.addPackage(.{
+        .name = "glm",
+        .path = .{
+            .path = "external/glm/glm.zig",
+        },
+    });
+
+    exe.addPackage(.{
         .name = "config",
         .path = .{
             .path = "config.zig",

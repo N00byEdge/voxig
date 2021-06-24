@@ -71,3 +71,8 @@ pub fn swapBuffers(window: *c.GLFWwindow) void {
 pub fn pollEvents() void {
     c.glfwPollEvents();
 }
+pub fn getWindowSize(window: *c.GLFWwindow) [2]c_int {
+    var result: [2]c_int = undefined;
+    c.glfwGetWindowSize(window, &result[0], &result[1]);
+    return result;
+}
