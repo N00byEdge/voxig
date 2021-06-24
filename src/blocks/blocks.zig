@@ -72,19 +72,19 @@ pub fn BasicBlock(
                 BlockFace(top, 0xF).generate(args.mesh, .top, args.x, args.y, args.z);
 
             if (args.draw_bottom)
-                BlockFace(bottom, 0xA).generate(args.mesh, .bottom, args.x, args.y, args.z);
+                BlockFace(bottom, 0xD).generate(args.mesh, .bottom, args.x, args.y, args.z);
 
             if (args.draw_north)
-                BlockFace(front, 0xD).generate(args.mesh, .north, args.x, args.y, args.z);
+                BlockFace(front, 0xE).generate(args.mesh, .north, args.x, args.y, args.z);
 
             if (args.draw_south)
-                BlockFace(back, 0xD).generate(args.mesh, .south, args.x, args.y, args.z);
+                BlockFace(back, 0xE).generate(args.mesh, .south, args.x, args.y, args.z);
 
             if (args.draw_west)
-                BlockFace(left, 0xD).generate(args.mesh, .west, args.x, args.y, args.z);
+                BlockFace(left, 0xE).generate(args.mesh, .west, args.x, args.y, args.z);
 
             if (args.draw_east)
-                BlockFace(right, 0xD).generate(args.mesh, .east, args.x, args.y, args.z);
+                BlockFace(right, 0xE).generate(args.mesh, .east, args.x, args.y, args.z);
         }
 
         fn cornerVertex(self: *const @This(), mesh: *Mesh, cond: bool, x: i32, y: i32, z: i32) Mesh.VertexID {
