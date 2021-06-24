@@ -15,5 +15,12 @@ pub fn main() anyerror!void {
     glfw.makeContextCurrent(game_window);
     glfw.swapInterval(1);
 
+    log.info("Enabling face culling", .{});
+    glfw.c.glEnable(glfw.c.GL_CULL_FACE);
+
+    log.info("Enabling depth testing", .{});
+    glfw.c.glEnable(glfw.c.GL_DEPTH_TEST);
+    glfw.c.glDepthFunc(glfw.c.GL_LESS);
+
     try game.loop(game_window);
 }
