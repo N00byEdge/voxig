@@ -28,67 +28,67 @@ const vec3 vert_deltas[8] = vec3[8](
 const int delta_inds[6][6] = int[6][6](
     // Up
     int[6](
-        3, // top_west_north
+        6, // top_east_south
         2, // top_west_south
-        6, // top_east_south
-        6, // top_east_south
-        7, // top_east_north
-        3  // top_west_north
-    ),
-
-    // Down
-    int[6](
-        5, // bottom_east_north
-        4, // bottom_east_south
-        0, // bottom_west_south
-        0, // bottom_west_south
-        1, // bottom_west_north
-        5  // bottom_east_north
-    ),
-
-    // West
-    int[6](
         3, // top_west_north
-        1, // bottom_west_north
-        0, // bottom_west_south
-        0, // bottom_west_south
-        2, // top_west_south
-        3  // top_west_north
-    ),
-
-    // East
-    int[6](
-        6, // top_east_south
-        4, // bottom_east_south
-        5, // bottom_east_north
-        5, // bottom_east_north
+        3, // top_west_north
         7, // top_east_north
         6  // top_east_south
     ),
 
-    // North
+    // Down
     int[6](
-        7, // top_east_north
+        0, // bottom_west_south
+        4, // bottom_east_south
+        5, // bottom_east_north
         5, // bottom_east_north
         1, // bottom_west_north
+        0  // bottom_west_south
+    ),
+
+    // West
+    int[6](
+        0, // bottom_west_south
         1, // bottom_west_north
         3, // top_west_north
-        7  // top_east_north
+        3, // top_west_north
+        2, // top_west_south
+        0  // bottom_west_south
+    ),
+
+    // East
+    int[6](
+        5, // bottom_east_north
+        4, // bottom_east_south
+        6, // top_east_south
+        6, // top_east_south
+        7, // top_east_north
+        5  // bottom_east_north
+    ),
+
+    // North
+    int[6](
+        1, // bottom_west_north
+        5, // bottom_east_north
+        7, // top_east_north
+        7, // top_east_north
+        3, // top_west_north
+        1  // bottom_west_north
     ),
 
     // South
     int[6](
-        2, // top_west_south
+        4, // bottom_east_south
         0, // bottom_west_south
-        4, // bottom_east_south
-        4, // bottom_east_south
+        2, // top_west_south
+        2, // top_west_south
         6, // top_east_south
-        2  // top_west_south
+        4  // bottom_east_south
     )
 );
 
-const float text_u_vals[6] = float[6](0,0,1,1,1,0);
-const float text_v_vals[6] = float[6](0,1,1,1,0,0);
+const float text_u_vals[6] = float[6](1,0,0,0,1,1);
+const float text_v_vals[6] = float[6](1,1,0,0,0,1);
 
 void main() {
     int face_vert_idx = gl_VertexID % 6;
