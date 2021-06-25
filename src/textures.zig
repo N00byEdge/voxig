@@ -21,7 +21,7 @@ pub fn init() zgl.Texture {
     return atlas;
 }
 
-pub fn findTexture(comptime tag: anytype) *const Texture {
+pub fn find(comptime tag: anytype) *const Texture {
     inline for (textures) |*text| {
         if (comptime std.mem.eql(u8, text.name, @tagName(tag)))
             return text;

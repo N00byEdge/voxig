@@ -51,22 +51,22 @@ pub fn BasicBlock(
             draw_east: bool,
         }) void {
             if (args.draw_top)
-                genFace(args.mesh, 0, textures.findTexture(top).index, args.x, args.y, args.z);
+                genFace(args.mesh, 0, textures.find(top).index, args.x, args.y, args.z);
 
             if (args.draw_bottom)
-                genFace(args.mesh, 1, textures.findTexture(bottom).index, args.x, args.y, args.z);
+                genFace(args.mesh, 1, textures.find(bottom).index, args.x, args.y, args.z);
 
             if (args.draw_west)
-                genFace(args.mesh, 2, textures.findTexture(left).index, args.x, args.y, args.z);
+                genFace(args.mesh, 2, textures.find(left).index, args.x, args.y, args.z);
 
             if (args.draw_east)
-                genFace(args.mesh, 3, textures.findTexture(right).index, args.x, args.y, args.z);
+                genFace(args.mesh, 3, textures.find(right).index, args.x, args.y, args.z);
 
             if (args.draw_north)
-                genFace(args.mesh, 4, textures.findTexture(back).index, args.x, args.y, args.z);
+                genFace(args.mesh, 4, textures.find(back).index, args.x, args.y, args.z);
 
             if (args.draw_south)
-                genFace(args.mesh, 5, textures.findTexture(front).index, args.x, args.y, args.z);
+                genFace(args.mesh, 5, textures.find(front).index, args.x, args.y, args.z);
         }
 
         fn cornerVertex(self: *const @This(), mesh: *Mesh, cond: bool, x: i32, y: i32, z: i32) Mesh.VertexID {
