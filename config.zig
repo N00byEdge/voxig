@@ -13,7 +13,9 @@ pub const default_resolution = .{
     .height = 1080,
 };
 
+// Controls
 pub const mouse_sensitivity = 0.004;
+pub const movement_speed = 6.0; // Blocks per second
 
 // Keybinds
 pub const keys = .{

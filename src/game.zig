@@ -56,7 +56,8 @@ fn update_movement(window: anytype, pos: *glm.Vector(3), look_x: f32) void {
     if (config_key_pressed(window, .down)) vel.values[2] -= 1;
     if (config_key_pressed(window, .up)) vel.values[2] += 1;
 
-    vel.divAssignScalar(20);
+    // We just assume 60 fps here, should use the frame delta at some point
+    vel.mulAssignScalar(config.movement_speed / @as(f32, 60));
 
     pos.addAssign(vel);
 }
