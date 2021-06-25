@@ -12,7 +12,7 @@ fn genQuad(mesh: *Mesh, attribute: i32, x: i32, y: i32, z: i32) callconv(.Inline
     });
 }
 
-fn BlockFace(comptime tag: anytype, comptime lighting: u4) type {
+fn BlockFace(comptime tag: anytype) type {
     const texture = textures.findTexture(tag);
 
     return struct {
@@ -36,7 +36,6 @@ fn BlockFace(comptime tag: anytype, comptime lighting: u4) type {
             const attribute: i32 = 0 //
             | (@intCast(u32, direction) << 0) // Direction field
             | (@intCast(u32, @intCast(u8, texture.index)) << 8) // Texture index field
-            | (@intCast(u32, lighting) << 16) // Lighting level
             ;
 
             log.info("Attribute int 0x{X} for dir {}, texture {}", .{ attribute, direction, texture.index });
@@ -69,22 +68,22 @@ pub fn BasicBlock(
             draw_east: bool,
         }) void {
             if (args.draw_top)
-                BlockFace(top, 0xF).generate(args.mesh, .top, args.x, args.y, args.z);
+                BlockFace(top).generate(args.mesh, .top, args.x, args.y, args.z);
 
             if (args.draw_bottom)
-                BlockFace(bottom, 0xD).generate(args.mesh, .bottom, args.x, args.y, args.z);
+                BlockFace(bottom).generate(args.mesh, .bottom, args.x, args.y, args.z);
 
             if (args.draw_north)
-                BlockFace(front, 0xE).generate(args.mesh, .north, args.x, args.y, args.z);
+                BlockFace(front).generate(args.mesh, .north, args.x, args.y, args.z);
 
             if (args.draw_south)
-                BlockFace(back, 0xE).generate(args.mesh, .south, args.x, args.y, args.z);
+                BlockFace(back).generate(args.mesh, .south, args.x, args.y, args.z);
 
             if (args.draw_west)
-                BlockFace(left, 0xE).generate(args.mesh, .west, args.x, args.y, args.z);
+                BlockFace(left).generate(args.mesh, .west, args.x, args.y, args.z);
 
             if (args.draw_east)
-                BlockFace(right, 0xE).generate(args.mesh, .east, args.x, args.y, args.z);
+                BlockFace(right).generate(args.mesh, .east, args.x, args.y, args.z);
         }
 
         fn cornerVertex(self: *const @This(), mesh: *Mesh, cond: bool, x: i32, y: i32, z: i32) Mesh.VertexID {

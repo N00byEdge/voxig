@@ -91,6 +91,7 @@ const int delta_inds[6][6] = int[6][6](
 
 const float text_u_vals[6] = float[6](1,0,0,0,1,1);
 const float text_v_vals[6] = float[6](1,1,0,0,0,1);
+const float face_light[6] = float[6](1.0,0.9,0.95,0.95,0.95,0.95);
 
 void main() {
     int face_vert_idx = gl_VertexID % 6;
@@ -99,9 +100,6 @@ void main() {
     int attrib = face_position.w;
     int direction = attrib & 0xFF;
     int texture = (attrib >> 8) & 0xFF;
-    int int_intensity = (attrib >> 16) & 0xF;
-
-    light_intensity = float(int_intensity) / 15;
 
     //int_pos += int_translation;
 
@@ -113,5 +111,6 @@ void main() {
 
     gl_Position = MVP * vec4(float_pos, 1.0);
 
+    light_intensity = face_light[direction];
     shaded_text_coord = vec3(text_u_vals[face_vert_idx], text_v_vals[face_vert_idx], float(texture));
 }
