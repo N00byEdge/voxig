@@ -51,7 +51,7 @@ fn update_movement(window: anytype, pos: *glm.Vector(3), look_x: f32) void {
     if (config_key_pressed(window, .left)) vel.subAssign(right);
     if (config_key_pressed(window, .right)) vel.addAssign(right);
 
-    if (vel.values[0] != 0 or vel.values[2] != 0) vel.normalizeAssign();
+    if (vel.values[0] != 0 or vel.values[1] != 0) vel.normalizeAssign();
 
     if (config_key_pressed(window, .down)) vel.values[2] -= 1;
     if (config_key_pressed(window, .up)) vel.values[2] += 1;
