@@ -9,7 +9,7 @@ pub const Shader = struct {
     fs: zgl.Shader,
     prog: zgl.Program,
 
-    pub fn init(self: *@This(), comptime path: []const u8, texture: zgl.Texture) !void {
+    pub fn init(self: *@This(), comptime path: []const u8) !void {
         log.info("Loading shader '" ++ path ++ "'", .{});
 
         self.vs = zgl.Shader.create(.vertex);
@@ -52,13 +52,13 @@ pub const Shader = struct {
             std.heap.page_allocator.free(compilation_log);
         }
 
-        {
-            const text_slot = self.prog.uniformLocation("texture_sampler").?;
-            log.info("Binding texture {} to {}", .{ texture, text_slot });
-            texture.bindTo(text_slot);
-        }
-
         self.prog.use();
+    }
+
+    pub fn bindTexture(self: *@This(), texture: zgl.Texture) void {
+        const text_slot = self.prog.uniformLocation("texture_sampler").?;
+        log.info("Binding texture {} to {}", .{ texture, text_slot });
+        texture.bindTo(text_slot);
     }
 
     pub fn deinit(self: *@This()) void {

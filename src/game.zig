@@ -99,10 +99,11 @@ pub fn loop(game_window: anytype) !void {
     defer mesh.deinit(std.heap.page_allocator);
 
     var voxel_shader: shader.Shader = undefined;
-    try voxel_shader.init("voxel", atlas);
+    try voxel_shader.init("voxel");
     defer voxel_shader.deinit();
 
     voxel_shader.bind();
+    voxel_shader.bindTexture(atlas);
 
     glfw.c.glClearColor(0.1, 0.0, 0.0, 1.0);
 
