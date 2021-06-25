@@ -38,8 +38,6 @@ fn BlockFace(comptime tag: anytype) type {
             | (@intCast(u32, @intCast(u8, texture.index)) << 8) // Texture index field
             ;
 
-            log.info("Attribute int 0x{X} for dir {}, texture {}", .{ attribute, direction, texture.index });
-
             genQuad(mesh, attribute, x, y, z);
         }
     };
