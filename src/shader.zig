@@ -17,7 +17,7 @@ pub const Shader = struct {
 
         log.info("Compiling vertex shader", .{});
 
-        self.vs.source(1, &[_][]const u8{@embedFile("shaders/" ++ path ++ ".vs")});
+        self.vs.source(1, &[_][]const u8{@embedFile("shaders/" ++ path ++ ".vert")});
         self.vs.compile();
 
         self.fs = zgl.Shader.create(.fragment);
@@ -25,7 +25,7 @@ pub const Shader = struct {
 
         log.info("Compiling fragment shader", .{});
 
-        self.fs.source(1, &[_][]const u8{@embedFile("shaders/" ++ path ++ ".fs")});
+        self.fs.source(1, &[_][]const u8{@embedFile("shaders/" ++ path ++ ".frag")});
         self.fs.compile();
 
         log.info("Creating program", .{});
