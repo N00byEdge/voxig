@@ -12,35 +12,20 @@ fn genQuad(mesh: *Mesh, attribute: i32, x: i32, y: i32, z: i32) callconv(.Inline
     });
 }
 
-fn BlockFace(comptime tag: anytype) type {
-    const texture = textures.findTexture(tag);
+fn genFace(
+    mesh: *Mesh,
+    direction: u8,
+    texture: u8,
+    x: i32,
+    y: i32,
+    z: i32,
+) void {
+    const attribute: i32 = 0 //
+    | (@intCast(i32, direction) << 0) // Direction field
+    | (@intCast(i32, @intCast(u8, texture)) << 8) // Texture index field
+    ;
 
-    return struct {
-        pub fn generate(
-            mesh: *Mesh,
-            comptime side: anytype,
-            x: i32,
-            y: i32,
-            z: i32,
-        ) callconv(.Inline) void {
-            const direction: u8 = switch (comptime side) {
-                .top => 0,
-                .bottom => 1,
-                .west => 2,
-                .east => 3,
-                .north => 4,
-                .south => 5,
-                else => @compileError("Invalid face"),
-            };
-
-            const attribute: i32 = 0 //
-            | (@intCast(u32, direction) << 0) // Direction field
-            | (@intCast(u32, @intCast(u8, texture.index)) << 8) // Texture index field
-            ;
-
-            genQuad(mesh, attribute, x, y, z);
-        }
-    };
+    genQuad(mesh, attribute, x, y, z);
 }
 
 // Basic blocks have no state nor facing direction
@@ -66,22 +51,22 @@ pub fn BasicBlock(
             draw_east: bool,
         }) void {
             if (args.draw_top)
-                BlockFace(top).generate(args.mesh, .top, args.x, args.y, args.z);
+                genFace(args.mesh, 0, textures.findTexture(top).index, args.x, args.y, args.z);
 
             if (args.draw_bottom)
-                BlockFace(bottom).generate(args.mesh, .bottom, args.x, args.y, args.z);
-
-            if (args.draw_north)
-                BlockFace(front).generate(args.mesh, .north, args.x, args.y, args.z);
-
-            if (args.draw_south)
-                BlockFace(back).generate(args.mesh, .south, args.x, args.y, args.z);
+                genFace(args.mesh, 1, textures.findTexture(bottom).index, args.x, args.y, args.z);
 
             if (args.draw_west)
-                BlockFace(left).generate(args.mesh, .west, args.x, args.y, args.z);
+                genFace(args.mesh, 2, textures.findTexture(left).index, args.x, args.y, args.z);
 
             if (args.draw_east)
-                BlockFace(right).generate(args.mesh, .east, args.x, args.y, args.z);
+                genFace(args.mesh, 3, textures.findTexture(right).index, args.x, args.y, args.z);
+
+            if (args.draw_north)
+                genFace(args.mesh, 4, textures.findTexture(back).index, args.x, args.y, args.z);
+
+            if (args.draw_south)
+                genFace(args.mesh, 5, textures.findTexture(front).index, args.x, args.y, args.z);
         }
 
         fn cornerVertex(self: *const @This(), mesh: *Mesh, cond: bool, x: i32, y: i32, z: i32) Mesh.VertexID {
