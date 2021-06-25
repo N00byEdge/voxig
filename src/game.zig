@@ -93,8 +93,6 @@ pub fn loop(game_window: anytype) !void {
         const window_size = glfw.getWindowSize(game_window);
         const aspect_ratio = @intToFloat(f32, window_size[0]) / @intToFloat(f32, window_size[1]);
 
-        const look_side = std.math.cos(look_z);
-
         const look_direction = forward(look_x, look_z);
         const up = forward(look_x, look_z + @as(f32, std.math.pi) / 2);
 
