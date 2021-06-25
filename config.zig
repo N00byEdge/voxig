@@ -6,6 +6,11 @@ pub const fov = 90;
 pub const near = 0.01;
 pub const far = 10000;
 
+pub const default_resolution = .{
+    .width = 1920,
+    .height = 1080,
+};
+
 pub const keys = .{
     .quit = .GLFW_KEY_Q,
     .forward = .GLFW_KEY_W,
