@@ -33,8 +33,21 @@ pub fn terminate() void {
     c.glfwTerminate();
 }
 
+pub fn getMouseDelta(window: ?*c.GLFWwindow) struct { dx: f64, dy: f64 } {
+    var dx: f64 = undefined;
+    var dy: f64 = undefined;
+    c.glfwGetCursorPos(window, &dx, &dy);
+    c.glfwSetCursorPos(window, 0, 0);
+    return .{
+        .dx = dx,
+        .dy = dy,
+    };
+}
+
 fn framebufferSizeCallback(window: ?*c.GLFWwindow, width: c_int, height: c_int) callconv(.C) void {
     c.glViewport(0, 0, width, height);
+    // If size changed, reset the mouse
+    _ = getMouseDelta(window);
 }
 
 pub fn createWindow(
@@ -46,6 +59,16 @@ pub fn createWindow(
 ) *c.GLFWwindow {
     const window = @ptrCast(*c.GLFWwindow, c.glfwCreateWindow(width, height, title, monitor, share));
     _ = c.glfwSetFramebufferSizeCallback(window, framebufferSizeCallback);
+
+    c.glfwSetInputMode(window, c.GLFW_CURSOR, c.GLFW_CURSOR_DISABLED);
+
+    if (c.glfwRawMouseMotionSupported() == c.GLFW_TRUE) {
+        log.info("Raw mouse input enabled", .{});
+        c.glfwSetInputMode(window, c.GLFW_RAW_MOUSE_MOTION, c.GLFW_TRUE);
+    }
+
+    _ = getMouseDelta(window);
+
     return window;
 }
 

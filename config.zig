@@ -13,6 +13,8 @@ pub const default_resolution = .{
     .height = 1080,
 };
 
+pub const mouse_sensitivity = 0.004;
+
 // Keybinds
 pub const keys = .{
     .quit = .GLFW_KEY_Q,
