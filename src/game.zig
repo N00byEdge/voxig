@@ -1,5 +1,6 @@
 const std = @import("std");
 const glm = @import("glm");
+const zgl = @import("zgl");
 const config = @import("config");
 
 const glfw = @import("bind/glfw.zig");
@@ -102,8 +103,11 @@ pub fn loop(game_window: anytype) !void {
     try voxel_shader.init("voxel");
     defer voxel_shader.deinit();
 
-    voxel_shader.bind();
     voxel_shader.bindTexture(atlas);
+
+    var cross_shader: shader.Shader = undefined;
+    try cross_shader.init("cross");
+    defer cross_shader.deinit();
 
     glfw.c.glClearColor(0.1, 0.0, 0.0, 1.0);
 
@@ -144,7 +148,12 @@ pub fn loop(game_window: anytype) !void {
 
         glfw.c.glClear(glfw.c.GL_COLOR_BUFFER_BIT | glfw.c.GL_DEPTH_BUFFER_BIT);
 
+        voxel_shader.bind();
         mesh.draw();
+
+        cross_shader.bind();
+        cross_shader.aspectRatio(aspect_ratio);
+        zgl.drawArrays(.triangles, 0, 12);
 
         glfw.swapBuffers(game_window);
         glfw.pollEvents();

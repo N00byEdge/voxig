@@ -76,4 +76,8 @@ pub const Shader = struct {
     pub fn camera(self: *@This(), cam: glm.Matrix(4)) void {
         self.prog.uniformMatrix4(1, false, &[_][4][4]f32{cam.values});
     }
+
+    pub fn aspectRatio(self: *@This(), ratio: f32) void {
+        self.prog.uniform1f(0, ratio);
+    }
 };
