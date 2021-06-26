@@ -26,10 +26,8 @@ fn config_key_pressed(window: anytype, comptime tag: anytype) bool {
     return state == glfw.c.GLFW_PRESS;
 }
 
-fn update_mouse(window: anytype, comptime ignore: anytype, look_x: *f32, look_z: *f32) void {
+fn update_mouse(window: anytype, look_x: *f32, look_z: *f32) void {
     const delta = glfw.getMouseDelta(window);
-    if (comptime (ignore == .ignore))
-        return;
 
     look_x.* += @floatCast(f32, -delta.dx * config.mouse_sensitivity);
     look_z.* += @floatCast(f32, -delta.dy * config.mouse_sensitivity);
@@ -114,7 +112,7 @@ pub fn loop(game_window: anytype) !void {
             break;
         }
 
-        update_mouse(game_window, .do_not_ignore, &look_x, &look_z);
+        update_mouse(game_window, &look_x, &look_z);
         update_movement(game_window, &position, look_x);
 
         const look_direction = forward(look_x, look_z);
