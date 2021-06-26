@@ -101,10 +101,8 @@ pub fn loop(game_window: anytype) !void {
     const mesh = try mesh_builder.finalize(std.heap.page_allocator);
     defer mesh.deinit(std.heap.page_allocator);
 
-    var voxel_shader = try VoxelShader.init();
+    var voxel_shader = try VoxelShader.init(atlas);
     defer voxel_shader.deinit();
-
-    voxel_shader.texture(atlas);
 
     var cross_shader = try CrossShader.init();
     defer cross_shader.deinit();
