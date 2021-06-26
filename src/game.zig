@@ -146,7 +146,10 @@ pub fn loop(game_window: anytype) !void {
 
         voxel_shader.camera(camera);
 
-        glfw.c.glClear(glfw.c.GL_COLOR_BUFFER_BIT | glfw.c.GL_DEPTH_BUFFER_BIT);
+        zgl.clear(.{
+            .color = true,
+            .depth = true,
+        });
 
         voxel_shader.use();
         mesh.draw();
