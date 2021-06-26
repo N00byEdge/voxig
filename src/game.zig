@@ -144,19 +144,13 @@ pub fn loop(game_window: anytype) !void {
 
         const camera = perspective.mul(look);
 
-        voxel_shader.camera(camera);
-
         zgl.clear(.{
             .color = true,
             .depth = true,
         });
 
-        voxel_shader.use();
-        mesh.draw();
-
-        cross_shader.use();
-        cross_shader.aspectRatio(aspect_ratio);
-        zgl.drawArrays(.triangles, 0, 12);
+        voxel_shader.draw(camera, mesh);
+        cross_shader.draw(aspect_ratio);
 
         glfw.swapBuffers(game_window);
         glfw.pollEvents();

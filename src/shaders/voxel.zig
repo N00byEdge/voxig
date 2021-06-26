@@ -21,16 +21,14 @@ pub const VoxelShader = struct {
         self.shader.deinit();
     }
 
-    pub fn use(self: *@This()) void {
-        self.shader.use();
-    }
-
     pub fn texture(self: *@This(), text: zgl.Texture) void {
-        self.use();
+        self.shader.use();
         text.bindTo(0);
     }
 
-    pub fn camera(self: *@This(), cam: glm.Matrix(4)) void {
+    pub fn draw(self: *@This(), cam: glm.Matrix(4), mesh: anytype) void {
+        self.shader.use();
         self.shader.prog.uniformMatrix4(1, false, &[_][4][4]f32{cam.values});
+        mesh.draw();
     }
 };

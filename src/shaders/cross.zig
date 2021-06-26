@@ -1,5 +1,7 @@
 const Shader = @import("shader.zig").Shader;
 
+const zgl = @import("zgl");
+
 pub const CrossShader = struct {
     shader: Shader,
 
@@ -17,11 +19,9 @@ pub const CrossShader = struct {
         self.shader.deinit();
     }
 
-    pub fn use(self: *@This()) void {
+    pub fn draw(self: *@This(), aspect_ratio: f32) void {
         self.shader.use();
-    }
-
-    pub fn aspectRatio(self: *@This(), ratio: f32) void {
-        self.shader.prog.uniform1f(0, ratio);
+        self.shader.prog.uniform1f(0, aspect_ratio);
+        zgl.drawArrays(.triangles, 0, 12);
     }
 };
