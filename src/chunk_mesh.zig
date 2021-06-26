@@ -11,11 +11,12 @@ const values_per_block = 6 * 4;
 
 pub const ChunkMeshBuilder = struct {
     verts: std.ArrayListUnmanaged(i32),
-    num: usize,
+    num: usize = 0,
 
-    pub fn init(self: *@This(), allocator: *std.mem.Allocator, block_capacity: usize) !void {
-        self.verts = try @TypeOf(self.verts).initCapacity(allocator, block_capacity * values_per_block);
-        self.num = 0;
+    pub fn init(allocator: *std.mem.Allocator, block_capacity: usize) !@This() {
+        return @This(){
+            .verts = try std.ArrayListUnmanaged(i32).initCapacity(allocator, block_capacity * values_per_block),
+        };
     }
 
     pub fn deinit(self: *@This(), allocator: *std.mem.Allocator) void {

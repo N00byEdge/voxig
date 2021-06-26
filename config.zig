@@ -13,6 +13,17 @@ pub const default_resolution = .{
     .height = 1080,
 };
 
+pub const chunk = .{
+    // The x, y and z size of each chunk
+    .size = 32,
+
+    // The number of bytes of mesh data stored in the chunk before going to the heap
+    .mesh_data_inline_capacity = 4096,
+
+    // The number of bytes of block data stored in the chunk before going to the heap
+    .block_data_inline_capacity = 4096,
+};
+
 // Controls
 pub const mouse_sensitivity = 0.004;
 pub const movement_speed = 6.0; // Blocks per second

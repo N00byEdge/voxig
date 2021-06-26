@@ -13,6 +13,7 @@ pub const VoxelShader = struct {
 
         retval.shader.assertLocation(0, "texture_sampler");
         retval.shader.assertLocation(1, "MVP");
+        retval.shader.assertLocation(2, "chunk_pos");
 
         retval.shader.use();
         text.bindTo(0);
@@ -24,13 +25,16 @@ pub const VoxelShader = struct {
         self.shader.deinit();
     }
 
-    pub fn camera(self: *@This(), cam: glm.Matrix(4)) void {
+    pub fn camera(self: *const @This(), cam: glm.Matrix(4)) void {
         self.shader.use();
         self.shader.prog.uniformMatrix4(1, false, &[_][4][4]f32{cam.values});
     }
 
-    pub fn draw(self: *@This(), mesh: anytype) void {
-        self.shader.use();
+    pub fn chunkPos(self: *const @This(), x: i32, y: i32, z: i32) void {
+        zgl.uniform3i(2, x, y, z);
+    }
+
+    pub fn draw(self: *const @This(), mesh: anytype) void {
         mesh.draw();
     }
 };

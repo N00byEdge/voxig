@@ -9,6 +9,7 @@ const blocks = @import("blocks/blocks.zig");
 
 const CrossShader = @import("shaders/cross.zig").CrossShader;
 const VoxelShader = @import("shaders/voxel.zig").VoxelShader;
+const World = @import("world/world.zig").World;
 
 const log = std.log.scoped(.game);
 
@@ -62,38 +63,8 @@ fn updateMovement(window: anytype, pos: *glm.Vector(3), look_x: f32) void {
 pub fn loop(game_window: anytype) !void {
     const atlas = textures.init();
 
-    var mesh_builder: @import("chunk_mesh.zig").ChunkMeshBuilder = undefined;
-    try mesh_builder.init(std.heap.page_allocator, 2);
-    defer mesh_builder.deinit(std.heap.page_allocator);
-
-    @import("blocks/blocks.zig").findBlock(.grass).block_type.addToMesh(.{
-        .mesh = &mesh_builder,
-        .x = -1,
-        .y = 0,
-        .z = 0,
-        .draw_top = true,
-        .draw_bottom = true,
-        .draw_north = true,
-        .draw_south = true,
-        .draw_west = true,
-        .draw_east = true,
-    });
-
-    @import("blocks/blocks.zig").findBlock(.barrier).block_type.addToMesh(.{
-        .mesh = &mesh_builder,
-        .x = 1,
-        .y = 0,
-        .z = 0,
-        .draw_top = true,
-        .draw_bottom = true,
-        .draw_north = true,
-        .draw_south = true,
-        .draw_west = true,
-        .draw_east = true,
-    });
-
-    const mesh = try mesh_builder.finalize(std.heap.page_allocator);
-    defer mesh.deinit(std.heap.page_allocator);
+    var world = try World.init();
+    defer world.deinit();
 
     var voxel_shader = try VoxelShader.init(atlas);
     defer voxel_shader.deinit();
@@ -103,7 +74,7 @@ pub fn loop(game_window: anytype) !void {
 
     glfw.c.glClearColor(0.1, 0.0, 0.0, 1.0);
 
-    var position = glm.Vector(3).init([_]f32{ 0.5, -1.5, 2 });
+    var position = glm.Vector(3).init([_]f32{ 1.5, -1.5, 2 });
     var look_z: f32 = -0.4;
     var look_x: f32 = @as(f32, std.math.pi) / 2;
 
@@ -142,7 +113,8 @@ pub fn loop(game_window: anytype) !void {
         });
 
         voxel_shader.camera(camera);
-        voxel_shader.draw(mesh);
+        world.draw(voxel_shader);
+
         cross_shader.draw(aspect_ratio);
 
         glfw.swapBuffers(game_window);
