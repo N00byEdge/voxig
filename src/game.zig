@@ -26,10 +26,6 @@ fn config_key_pressed(window: anytype, comptime tag: anytype) bool {
     return state == glfw.c.GLFW_PRESS;
 }
 
-fn fmod(f32: value) f32 {
-    return value - std.math.floor(value);
-}
-
 fn update_mouse(window: anytype, comptime ignore: anytype, look_x: *f32, look_z: *f32) void {
     const delta = glfw.getMouseDelta(window);
     if (comptime (ignore == .ignore))
