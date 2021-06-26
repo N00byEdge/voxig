@@ -6,7 +6,9 @@ const config = @import("config");
 const glfw = @import("bind/glfw.zig");
 const textures = @import("textures.zig");
 const blocks = @import("blocks/blocks.zig");
-const shader = @import("shader.zig");
+
+const CrossShader = @import("shaders/cross.zig").CrossShader;
+const VoxelShader = @import("shaders/voxel.zig").VoxelShader;
 
 const log = std.log.scoped(.game);
 
@@ -99,14 +101,12 @@ pub fn loop(game_window: anytype) !void {
     const mesh = try mesh_builder.finalize(std.heap.page_allocator);
     defer mesh.deinit(std.heap.page_allocator);
 
-    var voxel_shader: shader.Shader = undefined;
-    try voxel_shader.init("voxel");
+    var voxel_shader = try VoxelShader.init();
     defer voxel_shader.deinit();
 
-    voxel_shader.bindTexture(atlas);
+    voxel_shader.texture(atlas);
 
-    var cross_shader: shader.Shader = undefined;
-    try cross_shader.init("cross");
+    var cross_shader = try CrossShader.init();
     defer cross_shader.deinit();
 
     glfw.c.glClearColor(0.1, 0.0, 0.0, 1.0);
@@ -148,10 +148,10 @@ pub fn loop(game_window: anytype) !void {
 
         glfw.c.glClear(glfw.c.GL_COLOR_BUFFER_BIT | glfw.c.GL_DEPTH_BUFFER_BIT);
 
-        voxel_shader.bind();
+        voxel_shader.use();
         mesh.draw();
 
-        cross_shader.bind();
+        cross_shader.use();
         cross_shader.aspectRatio(aspect_ratio);
         zgl.drawArrays(.triangles, 0, 12);
 
