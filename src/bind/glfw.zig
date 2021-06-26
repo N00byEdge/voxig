@@ -67,8 +67,6 @@ pub fn createWindow(
         c.glfwSetInputMode(window, c.GLFW_RAW_MOUSE_MOTION, c.GLFW_TRUE);
     }
 
-    _ = getMouseDelta(window);
-
     return window;
 }
 

@@ -29,5 +29,8 @@ pub fn main() anyerror!void {
     glfw.c.glEnable(glfw.c.GL_DEPTH_TEST);
     glfw.c.glDepthFunc(glfw.c.GL_LESS);
 
+    glfw.pollEvents();
+    _ = glfw.getMouseDelta(game_window);
+
     try game.loop(game_window);
 }
