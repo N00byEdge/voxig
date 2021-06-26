@@ -141,7 +141,8 @@ pub fn loop(game_window: anytype) !void {
             .depth = true,
         });
 
-        voxel_shader.draw(camera, mesh);
+        voxel_shader.camera(camera);
+        voxel_shader.draw(mesh);
         cross_shader.draw(aspect_ratio);
 
         glfw.swapBuffers(game_window);

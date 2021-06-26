@@ -24,9 +24,13 @@ pub const VoxelShader = struct {
         self.shader.deinit();
     }
 
-    pub fn draw(self: *@This(), cam: glm.Matrix(4), mesh: anytype) void {
+    pub fn camera(self: *@This(), cam: glm.Matrix(4)) void {
         self.shader.use();
         self.shader.prog.uniformMatrix4(1, false, &[_][4][4]f32{cam.values});
+    }
+
+    pub fn draw(self: *@This(), mesh: anytype) void {
+        self.shader.use();
         mesh.draw();
     }
 };
