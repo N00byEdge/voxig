@@ -7,7 +7,7 @@ const gl = @import("bind/glfw.zig").c;
 
 const log = std.log.scoped(.chunk_mesh);
 
-const values_per_block = 6 * 4;
+const values_per_block = 6;
 
 pub const ChunkMeshBuilder = struct {
     verts: std.ArrayListUnmanaged(i32),
@@ -48,8 +48,8 @@ pub const ChunkMeshBuilder = struct {
         result.buffer.data(i32, result.verts, .static_draw);
 
         result.vao.enableVertexAttribute(0);
-        result.vao.vertexBuffer(0, result.buffer, 0, 4 * 4);
-        result.vao.attribIFormat(0, 4, .int, 0);
+        result.vao.vertexBuffer(0, result.buffer, 0, 4);
+        result.vao.attribIFormat(0, 1, .int, 0);
         result.vao.attribBinding(0, 0);
         gl.glVertexArrayBindingDivisor(@enumToInt(result.vao), 0, 1);
 

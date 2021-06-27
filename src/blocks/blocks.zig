@@ -6,26 +6,23 @@ const Mesh = @import("../chunk_mesh.zig").ChunkMeshBuilder;
 
 const log = std.log.scoped(.blocks);
 
-fn genQuad(mesh: *Mesh, attribute: i32, x: i32, y: i32, z: i32) callconv(.Inline) void {
-    mesh.add(&[_]i32{
-        x, y, z, attribute,
-    });
-}
-
 fn genFace(
     mesh: *Mesh,
     direction: u8,
     texture: u8,
-    x: i32,
-    y: i32,
-    z: i32,
+    x: u5,
+    y: u5,
+    z: u5,
 ) void {
     const attribute: i32 = 0 //
     | (@intCast(i32, direction) << 0) // Direction field
     | (@intCast(i32, @intCast(u8, texture)) << 8) // Texture index field
+    | (@intCast(i32, x) << 16) // x
+    | (@intCast(i32, y) << 21) // y
+    | (@intCast(i32, z) << 26) // z
     ;
 
-    genQuad(mesh, attribute, x, y, z);
+    mesh.add(&[_]i32{attribute});
 }
 
 // Basic blocks have no state nor facing direction
@@ -40,9 +37,9 @@ pub fn BasicBlock(
     return struct {
         pub fn addToMesh(args: struct {
             mesh: *Mesh,
-            x: i32,
-            y: i32,
-            z: i32,
+            x: u5,
+            y: u5,
+            z: u5,
             draw_top: bool,
             draw_bottom: bool,
             draw_north: bool,
@@ -67,13 +64,6 @@ pub fn BasicBlock(
 
             if (args.draw_south)
                 genFace(args.mesh, 5, textures.find(front).index, args.x, args.y, args.z);
-        }
-
-        fn cornerVertex(self: *const @This(), mesh: *Mesh, cond: bool, x: i32, y: i32, z: i32) Mesh.VertexID {
-            if (comptime (config.conditional_vertices) or cond) {
-                return mesh.addVertex(x, y, z);
-            }
-            return undefined;
         }
     };
 }

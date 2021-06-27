@@ -1,7 +1,7 @@
 #version 430
 
 // Vertex attributes
-layout (location = 0) in ivec4 face_position;
+layout (location = 0) in int attrib;
 
 // Uniforms
 layout (location = 1) uniform mat4 MVP;
@@ -95,10 +95,13 @@ const float text_v_vals[6] = float[6](1,1,0,0,0,1);
 const float face_light[6] = float[6](1.0,0.9,0.95,0.95,0.95,0.95);
 
 void main() {
-    ivec3 int_pos = face_position.xyz + chunk_pos;
-    int attrib = face_position.w;
     int direction = attrib & 0xFF;
     int texture = (attrib >> 8) & 0xFF;
+    int x = (attrib >> 16) & 0x1F;
+    int y = (attrib >> 21) & 0x1F;
+    int z = (attrib >> 26) & 0x1F;
+
+    ivec3 int_pos = ivec3(x, y, z) + chunk_pos;
 
     //int_pos += int_translation;
 
