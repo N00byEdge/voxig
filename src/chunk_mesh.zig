@@ -15,7 +15,7 @@ pub const ChunkMeshBuilder = struct {
 
     pub fn init(allocator: *std.mem.Allocator, block_capacity: usize) !@This() {
         return @This(){
-            .verts = try std.ArrayListUnmanaged(i32).initCapacity(allocator, block_capacity * values_per_block),
+            .verts = try std.ArrayListUnmanaged(i32).initCapacity(allocator, block_capacity * values_per_block * 4),
         };
     }
 
