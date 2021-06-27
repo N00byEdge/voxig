@@ -7,6 +7,8 @@ const std = @import("std");
 const log = std.log.scoped(.glfw);
 const textures = @import("../textures.zig");
 
+const disable_mouse_input = false;
+
 fn errorCallback(err: c_int, desc: [*c]const u8) callconv(.C) void {
     log.err("Got GLFW error: 0x{X} with description {s}!", .{ err, desc });
     @panic("GLFW error");
@@ -34,10 +36,18 @@ pub fn terminate() void {
 }
 
 pub fn getMouseDelta(window: ?*c.GLFWwindow) struct { dx: f64, dy: f64 } {
+    if (comptime (disable_mouse_input)) {
+        return .{
+            .dx = 0,
+            .dy = 0,
+        };
+    }
+
     var dx: f64 = undefined;
     var dy: f64 = undefined;
     c.glfwGetCursorPos(window, &dx, &dy);
     c.glfwSetCursorPos(window, 0, 0);
+
     return .{
         .dx = dx,
         .dy = dy,
@@ -60,11 +70,13 @@ pub fn createWindow(
     const window = @ptrCast(*c.GLFWwindow, c.glfwCreateWindow(width, height, title, monitor, share));
     _ = c.glfwSetFramebufferSizeCallback(window, framebufferSizeCallback);
 
-    c.glfwSetInputMode(window, c.GLFW_CURSOR, c.GLFW_CURSOR_DISABLED);
+    if (comptime (!disable_mouse_input)) {
+        c.glfwSetInputMode(window, c.GLFW_CURSOR, c.GLFW_CURSOR_DISABLED);
 
-    if (c.glfwRawMouseMotionSupported() == c.GLFW_TRUE) {
-        log.info("Raw mouse input enabled", .{});
-        c.glfwSetInputMode(window, c.GLFW_RAW_MOUSE_MOTION, c.GLFW_TRUE);
+        if (c.glfwRawMouseMotionSupported() == c.GLFW_TRUE) {
+            log.info("Raw mouse input enabled", .{});
+            c.glfwSetInputMode(window, c.GLFW_RAW_MOUSE_MOTION, c.GLFW_TRUE);
+        }
     }
 
     return window;
