@@ -145,32 +145,26 @@ pub const Chunk = struct {
         var mesh_builder = try ChunkMeshBuilder.init(self.mesh_data_alloc.get(), chunk_size * chunk_size * chunk_size);
         errdefer mesh_builder.deinit();
 
-        var chunk_x: usize = 0;
-        while (chunk_x < chunk_size) : (chunk_x += 1) {
-            var chunk_y: usize = 0;
-            while (chunk_y < chunk_size) : (chunk_y += 1) {
-                var chunk_z: usize = 0;
-                while (chunk_z < chunk_size) : (chunk_z += 1) {
-                    const id = self.block_ids[chunk_x][chunk_y][chunk_z];
-                    const blocks = @import("../blocks/blocks.zig").blocks;
+        var iter = self.iterateCoords();
 
-                    // https://github.com/ziglang/zig/issues/7224
-                    inline for (blocks) |blk| {
-                        if (blk.block_id == id) {
-                            blk.block_type.addToMesh(.{
-                                .mesh = &mesh_builder,
-                                .x = @intCast(u5, chunk_x),
-                                .y = @intCast(u5, chunk_y),
-                                .z = @intCast(u5, chunk_z),
-                                .draw_top = true,
-                                .draw_bottom = true,
-                                .draw_north = true,
-                                .draw_south = true,
-                                .draw_west = true,
-                                .draw_east = true,
-                            });
-                        }
-                    }
+        while (iter.advanceXYZ()) {
+            const id = self.block_ids[iter.chunkX()][iter.chunkY()][iter.chunkZ()];
+
+            const blocks = @import("../blocks/blocks.zig").blocks;
+            inline for (blocks) |blk| {
+                if (blk.block_id == id) {
+                    blk.block_type.addToMesh(.{
+                        .mesh = &mesh_builder,
+                        .x = iter.chunkX(),
+                        .y = iter.chunkY(),
+                        .z = iter.chunkZ(),
+                        .draw_top = true,
+                        .draw_bottom = true,
+                        .draw_north = true,
+                        .draw_south = true,
+                        .draw_west = true,
+                        .draw_east = true,
+                    });
                 }
             }
         }
