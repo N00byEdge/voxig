@@ -32,32 +32,45 @@ const CoordIterator = struct {
         };
     }
 
-    fn advanceZ(self: *@This()) bool {
+    pub fn advanceZ(self: *@This()) bool {
         self.chunk_z += 1;
         self.abs_z += 1;
-        return self.chunk_z != chunk_size;
+        if (self.chunk_z == chunk_size) {
+            self.abs_z -= self.chunk_z;
+            self.chunk_z = 0;
+            return false;
+        }
+        return true;
     }
 
-    fn advanceY(self: *@This()) bool {
+    pub fn advanceY(self: *@This()) bool {
         self.chunk_y += 1;
         self.abs_y += 1;
         if (self.chunk_y == chunk_size) {
             self.abs_y -= self.chunk_y;
             self.chunk_y = 0;
-            return self.advanceZ();
+            return false;
         }
         return true;
     }
 
-    pub fn next(self: *@This()) bool {
+    pub fn advanceX(self: *@This()) bool {
         self.chunk_x += 1;
         self.abs_x += 1;
         if (self.chunk_x == chunk_size) {
             self.abs_x -= self.chunk_x;
             self.chunk_x = 0;
-            return self.advanceY();
+            return false;
         }
         return true;
+    }
+
+    pub fn advanceXYZ(self: *@This()) bool {
+        return self.advanceX() or self.advanceY() or self.advanceZ();
+    }
+
+    pub fn advanceXY(self: *@This()) bool {
+        return self.advanceX() or self.advanceY();
     }
 
     pub fn chunkX(self: *const @This()) u5 {
