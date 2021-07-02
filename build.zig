@@ -36,6 +36,13 @@ pub fn build(b: *Builder) void {
         },
     });
 
+    exe.addPackage(.{
+        .name = "rbtree",
+        .path = .{
+            .path = "src/lib/rbtree.zig",
+        },
+    });
+
     exe.addIncludeDir("/usr/include");
     exe.addIncludeDir("./external/FastNoiseLite/C/");
 
