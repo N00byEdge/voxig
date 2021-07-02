@@ -22,13 +22,17 @@ pub const World = struct {
     fn worldgenChunk(self: *@This(), chunk: *Chunk) void {
         var iter = chunk.iterateCoords();
 
-        while (iter.advanceXYZ()) {
-            if (self.cave_noise.getScaled(iter.absX(), iter.absY(), iter.absZ(), 2) == 1) {
-                const block_id = Blocks.findBlock(.stone).block_id;
-                chunk.setBlock(iter.chunkX(), iter.chunkY(), iter.chunkZ(), block_id);
-            } else {
-                const block_id = Blocks.findBlock(.air).block_id;
-                chunk.setBlock(iter.chunkX(), iter.chunkY(), iter.chunkZ(), block_id);
+        while (iter.advanceXY()) {
+            const height = self.height_noise.getScaled(iter.absX(), iter.absY(), 16) + 64;
+
+            while (iter.advanceZ()) {
+                if (self.cave_noise.getScaled(iter.absX(), iter.absY(), iter.absZ(), 2) == 0 or iter.absZ() > height) {
+                    const block_id = Blocks.findBlock(.air).block_id;
+                    chunk.setBlock(iter.chunkX(), iter.chunkY(), iter.chunkZ(), block_id);
+                } else {
+                    const block_id = Blocks.findBlock(.stone).block_id;
+                    chunk.setBlock(iter.chunkX(), iter.chunkY(), iter.chunkZ(), block_id);
+                }
             }
         }
     }
