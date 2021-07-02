@@ -53,7 +53,7 @@ pub const ChunkMeshBuilder = struct {
         result.vao.attribBinding(0, 0);
         gl.glVertexArrayBindingDivisor(@enumToInt(result.vao), 0, 1);
 
-        log.info("Finalized chunk mesh: {any}", .{result});
+        //log.info("Finalized chunk mesh: {any}", .{result});
 
         return result;
     }
