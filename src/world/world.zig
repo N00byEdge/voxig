@@ -19,17 +19,12 @@ pub const World = struct {
     }
 
     pub fn prepare(self: *@This()) void {
-        var chunk_x: i32 = 0;
-        while (chunk_x < Chunk.size) : (chunk_x += 1) {
-            var chunk_y: i32 = 0;
-            while (chunk_y < Chunk.size) : (chunk_y += 1) {
-                var chunk_z: i32 = 0;
-                while (chunk_z < Chunk.size) : (chunk_z += 1) {
-                    if (self.cave_noise.getScaled(self.chunk.x + chunk_x, self.chunk.y + chunk_y, self.chunk.z + chunk_z, 2) == 1) {
-                        const block_id = @import("../blocks/blocks.zig").findBlock(.stone).block_id;
-                        self.chunk.setBlock(@intCast(u5, chunk_x), @intCast(u5, chunk_y), @intCast(u5, chunk_z), block_id);
-                    }
-                }
+        var iter = self.chunk.iterateCoords();
+
+        while (iter.next()) {
+            if (self.cave_noise.getScaled(iter.absX(), iter.absY(), iter.absZ(), 2) == 1) {
+                const block_id = @import("../blocks/blocks.zig").findBlock(.stone).block_id;
+                self.chunk.setBlock(iter.chunkX(), iter.chunkY(), iter.chunkZ(), block_id);
             }
         }
     }

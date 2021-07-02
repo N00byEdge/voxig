@@ -11,6 +11,80 @@ const chunk_size = config.chunk.size;
 
 const log = std.log.scoped(.chunk);
 
+const CoordIterator = struct {
+    abs_x: i32,
+    abs_y: i32,
+    abs_z: i32,
+
+    chunk_x: i32,
+    chunk_y: i32,
+    chunk_z: i32,
+
+    pub fn init(abs_x: i32, abs_y: i32, abs_z: i32) @This() {
+        return .{
+            .abs_x = abs_x,
+            .abs_y = abs_y,
+            .abs_z = abs_z,
+
+            .chunk_x = 0,
+            .chunk_y = 0,
+            .chunk_z = 0,
+        };
+    }
+
+    fn advanceZ(self: *@This()) bool {
+        self.chunk_z += 1;
+        self.abs_z += 1;
+        return self.chunk_z != chunk_size;
+    }
+
+    fn advanceY(self: *@This()) bool {
+        self.chunk_y += 1;
+        self.abs_y += 1;
+        if (self.chunk_y == chunk_size) {
+            self.abs_y -= self.chunk_y;
+            self.chunk_y = 0;
+            return self.advanceZ();
+        }
+        return true;
+    }
+
+    pub fn next(self: *@This()) bool {
+        self.chunk_x += 1;
+        self.abs_x += 1;
+        if (self.chunk_x == chunk_size) {
+            self.abs_x -= self.chunk_x;
+            self.chunk_x = 0;
+            return self.advanceY();
+        }
+        return true;
+    }
+
+    pub fn chunkX(self: *const @This()) u5 {
+        return @intCast(u5, self.chunk_x);
+    }
+
+    pub fn chunkY(self: *const @This()) u5 {
+        return @intCast(u5, self.chunk_y);
+    }
+
+    pub fn chunkZ(self: *const @This()) u5 {
+        return @intCast(u5, self.chunk_z);
+    }
+
+    pub fn absX(self: *const @This()) i32 {
+        return self.abs_x;
+    }
+
+    pub fn absY(self: *const @This()) i32 {
+        return self.abs_y;
+    }
+
+    pub fn absZ(self: *const @This()) i32 {
+        return self.abs_z;
+    }
+};
+
 pub const Chunk = struct {
     x: i32,
     y: i32,
@@ -48,6 +122,10 @@ pub const Chunk = struct {
 
     pub fn invalidateMesh(self: *@This()) void {
         self.mesh = null;
+    }
+
+    pub fn iterateCoords(self: *@This()) CoordIterator {
+        return CoordIterator.init(self.x, self.y, self.z);
     }
 
     pub fn generateMesh(self: *@This()) !void {
