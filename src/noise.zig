@@ -6,11 +6,11 @@ const fnl = @cImport({
 const std = @import("std");
 const log = std.log.scoped(.noise);
 
-pub fn noise(comptime dim: comptime_int) type {
+pub fn Noise(comptime dim: comptime_int) type {
     return struct {
         fnl_obj: fnl.fnl_state,
 
-        const Noise = @This();
+        const NoiseType = @This();
 
         pub fn init(octaves: usize, seed: u32) @This() {
             var fnl_obj = fnl.fnlCreateState();
@@ -26,12 +26,12 @@ pub fn noise(comptime dim: comptime_int) type {
         // Returns [-1,1]
         pub const get = switch (dim) {
             2 => struct {
-                pub fn f(self: *Noise, x: i32, y: i32) f32 {
+                pub fn f(self: *NoiseType, x: i32, y: i32) f32 {
                     return fnl.fnlGetNoise2D(&self.fnl_obj, @intToFloat(f32, x), @intToFloat(f32, y));
                 }
             }.f,
             3 => struct {
-                pub fn f(self: *Noise, x: i32, y: i32, z: i32) f32 {
+                pub fn f(self: *NoiseType, x: i32, y: i32, z: i32) f32 {
                     return fnl.fnlGetNoise3D(&self.fnl_obj, @intToFloat(f32, x), @intToFloat(f32, y), @intToFloat(f32, z));
                 }
             }.f,
@@ -45,12 +45,12 @@ pub fn noise(comptime dim: comptime_int) type {
         // Returns [0,scale]
         pub const getScaled = switch (dim) {
             2 => struct {
-                pub fn f(self: *Noise, x: i32, y: i32) f32 {
+                pub fn f(self: *NoiseType, x: i32, y: i32) f32 {
                     return scaleNoise(self.get(x, y), scale);
                 }
             }.f,
             3 => struct {
-                pub fn f(self: *Noise, x: i32, y: i32, z: i32, scale: u32) u32 {
+                pub fn f(self: *NoiseType, x: i32, y: i32, z: i32, scale: u32) u32 {
                     return scaleNoise(self.get(x, y, z), scale);
                 }
             }.f,

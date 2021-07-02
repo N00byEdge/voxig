@@ -101,7 +101,7 @@ const block_list = .{
     //.iron_ore = BasicBlockSingleText(.iron_ore),
 };
 
-const blocks = {
+pub const blocks = {
     comptime var result: []const Block = &[_]Block{};
 
     inline for (@typeInfo(@TypeOf(block_list)).Struct.fields) |decl, i| {

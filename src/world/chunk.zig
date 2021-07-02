@@ -22,6 +22,8 @@ pub const Chunk = struct {
     mesh_data_alloc: std.heap.StackFallbackAllocator(config.chunk.mesh_data_inline_capacity),
     //block_data_alloc: std.heap.StackFallbackAllocator(config.chunk.block_data_inline_capacity),
 
+    pub const size = chunk_size;
+
     pub fn init(x: i32, y: i32, z: i32) @This() {
         return @This(){
             .x = x,
@@ -32,6 +34,10 @@ pub const Chunk = struct {
             .mesh_data_alloc = std.heap.stackFallback(config.chunk.mesh_data_inline_capacity, std.heap.page_allocator),
             //.block_data_alloc = std.heap.stackFallback(config.chunk.block_data_inline_capacity, std.heap.page_allocator),
         };
+    }
+
+    pub fn setBlock(self: *@This(), x: u5, y: u5, z: u5, block_id: u8) void {
+        self.block_ids[x][y][z] = block_id;
     }
 
     pub fn deinit(self: *@This()) void {
@@ -48,28 +54,31 @@ pub const Chunk = struct {
         var mesh_builder = try ChunkMeshBuilder.init(self.mesh_data_alloc.get(), chunk_size * chunk_size * chunk_size);
         errdefer mesh_builder.deinit();
 
-        var cave = @import("../noise.zig").noise(3).init(8, 0x22);
+        var chunk_x: usize = 0;
+        while (chunk_x < chunk_size) : (chunk_x += 1) {
+            var chunk_y: usize = 0;
+            while (chunk_y < chunk_size) : (chunk_y += 1) {
+                var chunk_z: usize = 0;
+                while (chunk_z < chunk_size) : (chunk_z += 1) {
+                    const id = self.block_ids[chunk_x][chunk_y][chunk_z];
+                    const blocks = @import("../blocks/blocks.zig").blocks;
 
-        var x: i32 = 0;
-        while (x < chunk_size) : (x += 1) {
-            var y: i32 = 0;
-            while (y < chunk_size) : (y += 1) {
-                var z: i32 = 0;
-                while (z < chunk_size) : (z += 1) {
-                    const fill = cave.getScaled(x, y, z, 2);
-                    if (1 == fill) {
-                        @import("../blocks/blocks.zig").findBlock(.stone).block_type.addToMesh(.{
-                            .mesh = &mesh_builder,
-                            .x = @intCast(u5, x),
-                            .y = @intCast(u5, y),
-                            .z = @intCast(u5, z),
-                            .draw_top = true,
-                            .draw_bottom = true,
-                            .draw_north = true,
-                            .draw_south = true,
-                            .draw_west = true,
-                            .draw_east = true,
-                        });
+                    // https://github.com/ziglang/zig/issues/7224
+                    inline for (blocks) |blk| {
+                        if (blk.block_id == id) {
+                            blk.block_type.addToMesh(.{
+                                .mesh = &mesh_builder,
+                                .x = @intCast(u5, chunk_x),
+                                .y = @intCast(u5, chunk_y),
+                                .z = @intCast(u5, chunk_z),
+                                .draw_top = true,
+                                .draw_bottom = true,
+                                .draw_north = true,
+                                .draw_south = true,
+                                .draw_west = true,
+                                .draw_east = true,
+                            });
+                        }
                     }
                 }
             }
