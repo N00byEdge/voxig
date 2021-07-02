@@ -87,28 +87,32 @@ pub const World = struct {
     pub fn deinit(self: *@This()) void {
         // If there are any chunks left in the rbtree, something is wrong.
         if (self.chunks.root) |_| {
-            @panic("World deinit: Chunks still ref'd!");
+            @panic("World.deinit: Chunks still ref'd!");
         }
     }
 
-    pub fn refChunk(self: *@This(), x: i32, y: i32, z: i32) !*Chunk {
-        {
-            const finder = ChunkFinder.init(x, y, z);
+    fn findLoadedChunk(self: *@This(), x: i32, y: i32, z: i32) ?*ChunkNode {
+        const finder = ChunkFinder.init(x, y, z);
 
-            const opt_node = self.chunks.lowerBound(
-                ChunkFinder,
-                &finder,
-            );
+        const opt_node = self.chunks.lowerBound(ChunkFinder, &finder);
 
-            if (opt_node) |chunk_node| {
-                if (chunk_node.chunk.x == x and chunk_node.chunk.y == y and chunk_node.chunk.z == z) {
-                    // Found existing chunk
-                    const new_refcount = @atomicRmw(usize, &chunk_node.refcount, .Add, 1, .AcqRel) + 1;
-                    if (new_refcount > 0) {
-                        return &chunk_node.chunk;
-                    }
-                }
+        if (opt_node) |chunk_node| {
+            if (chunk_node.chunk.x == x and chunk_node.chunk.y == y and chunk_node.chunk.z == z) {
+                return chunk_node;
             }
+        }
+
+        return null;
+    }
+
+    pub fn refChunk(self: *@This(), x: i32, y: i32, z: i32) !*Chunk {
+        if (self.findLoadedChunk(x, y, z)) |chunk_node| {
+            // Found existing chunk
+            const new_refcount = @atomicRmw(usize, &chunk_node.refcount, .Add, 1, .AcqRel) + 1;
+            if (new_refcount < 2) {
+                @panic("World.refChunk: new_refcount too low!");
+            }
+            return &chunk_node.chunk;
         }
 
         // Make a new one
