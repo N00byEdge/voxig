@@ -19,8 +19,8 @@ pub const World = struct {
         self.chunk.deinit();
     }
 
-    pub fn prepare(self: *@This()) void {
-        var iter = self.chunk.iterateCoords();
+    fn worldgenChunk(self: *@This(), chunk: *Chunk) void {
+        var iter = chunk.iterateCoords();
 
         while (iter.next()) {
             if (self.cave_noise.getScaled(iter.absX(), iter.absY(), iter.absZ(), 2) == 1) {
@@ -31,6 +31,10 @@ pub const World = struct {
                 chunk.setBlock(iter.chunkX(), iter.chunkY(), iter.chunkZ(), block_id);
             }
         }
+    }
+
+    pub fn prepare(self: *@This()) void {
+        self.worldgenChunk(&self.chunk);
     }
 
     pub fn draw(self: *@This(), shader: anytype) void {
