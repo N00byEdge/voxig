@@ -1,5 +1,6 @@
 const Chunk = @import("chunk.zig").Chunk;
 const Noise = @import("../noise.zig").Noise;
+const Blocks = @import("../blocks/blocks.zig");
 
 pub const World = struct {
     chunk: Chunk,
@@ -23,8 +24,11 @@ pub const World = struct {
 
         while (iter.next()) {
             if (self.cave_noise.getScaled(iter.absX(), iter.absY(), iter.absZ(), 2) == 1) {
-                const block_id = @import("../blocks/blocks.zig").findBlock(.stone).block_id;
-                self.chunk.setBlock(iter.chunkX(), iter.chunkY(), iter.chunkZ(), block_id);
+                const block_id = Blocks.findBlock(.stone).block_id;
+                chunk.setBlock(iter.chunkX(), iter.chunkY(), iter.chunkZ(), block_id);
+            } else {
+                const block_id = Blocks.findBlock(.air).block_id;
+                chunk.setBlock(iter.chunkX(), iter.chunkY(), iter.chunkZ(), block_id);
             }
         }
     }
