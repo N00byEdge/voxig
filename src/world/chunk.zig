@@ -20,7 +20,7 @@ pub const Chunk = struct {
     block_ids: [chunk_size][chunk_size][chunk_size]u8,
 
     mesh_data_alloc: std.heap.StackFallbackAllocator(config.chunk.mesh_data_inline_capacity),
-    block_data_alloc: std.heap.StackFallbackAllocator(config.chunk.block_data_inline_capacity),
+    //block_data_alloc: std.heap.StackFallbackAllocator(config.chunk.block_data_inline_capacity),
 
     pub fn init(x: i32, y: i32, z: i32) @This() {
         return @This(){
@@ -30,7 +30,7 @@ pub const Chunk = struct {
             .mesh = null,
             .block_ids = undefined,
             .mesh_data_alloc = std.heap.stackFallback(config.chunk.mesh_data_inline_capacity, std.heap.page_allocator),
-            .block_data_alloc = std.heap.stackFallback(config.chunk.block_data_inline_capacity, std.heap.page_allocator),
+            //.block_data_alloc = std.heap.stackFallback(config.chunk.block_data_inline_capacity, std.heap.page_allocator),
         };
     }
 
