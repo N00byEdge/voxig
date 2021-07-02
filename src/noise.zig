@@ -45,7 +45,7 @@ pub fn Noise(comptime dim: comptime_int) type {
         // Returns [0,scale]
         pub const getScaled = switch (dim) {
             2 => struct {
-                pub fn f(self: *NoiseType, x: i32, y: i32) f32 {
+                pub fn f(self: *NoiseType, x: i32, y: i32, scale: u32) u32 {
                     return scaleNoise(self.get(x, y), scale);
                 }
             }.f,
