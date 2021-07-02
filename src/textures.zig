@@ -41,10 +41,10 @@ const texture_dim = @import("config").textures.dim;
 
 const atlas_texture_list = .{
     .stone = .block,
-    .barrier = .block,
-    .dirt = .block,
-    .grass_side = .block,
-    .grass = .block,
+    //.barrier = .block,
+    //.dirt = .block,
+    //.grass_side = .block,
+    //.grass = .block,
 };
 
 const textures = {

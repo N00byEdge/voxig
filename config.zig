@@ -1,6 +1,6 @@
 // Size of all textures
 pub const textures = .{
-    .dim = 16,
+    .dim = 128,
 };
 
 // Render settings
