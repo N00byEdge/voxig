@@ -178,7 +178,7 @@ pub const Chunk = struct {
         self.mesh = try mesh_builder.finalize(self.mesh_data_alloc.get());
     }
 
-    pub fn draw(self: *@This(), shader: VoxelShader) void {
+    pub fn draw(self: *@This(), shader: *VoxelShader) void {
         if (self.mesh == null) {
             self.generateMesh() catch |err| {
                 log.err("Chunk mesh generation failed: {}", .{err});

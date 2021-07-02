@@ -41,7 +41,7 @@ pub const World = struct {
         self.worldgenChunk(&self.chunk);
     }
 
-    pub fn draw(self: *@This(), shader: anytype) void {
+    pub fn drawWorld(self: *@This(), shader: anytype) void {
         self.chunk.draw(shader);
     }
 };

@@ -19,7 +19,7 @@ pub const CrossShader = struct {
         self.shader.deinit();
     }
 
-    pub fn draw(self: *@This(), aspect_ratio: f32) void {
+    pub fn drawCross(self: *@This(), aspect_ratio: f32) void {
         self.shader.use();
         self.shader.prog.uniform1f(0, aspect_ratio);
         zgl.drawArrays(.triangles, 0, 12);

@@ -6,6 +6,7 @@ layout (location = 0) in int attrib;
 // Uniforms
 layout (location = 1) uniform mat4 MVP;
 layout (location = 2) uniform ivec3 chunk_pos;
+layout (location = 3) uniform ivec3 int_translation;
 
 //in vec3 float_position;
 //in vec3 textCoord;
@@ -13,9 +14,6 @@ layout (location = 2) uniform ivec3 chunk_pos;
 out vec3 shaded_text_coord;
 
 out float light_intensity;
-
-//uniform vec3 float_translation;
-//uniform ivec3 int_translation;
 
 const vec3 vert_deltas[8] = vec3[8](
     vec3(0.0, 0.0, 0.0), //bottom_west_south
@@ -103,7 +101,7 @@ void main() {
 
     ivec3 int_pos = ivec3(x, y, z) + chunk_pos;
 
-    //int_pos += int_translation;
+    int_pos += int_translation;
 
     vec3 float_pos = vec3(float(int_pos.x), float(int_pos.y), float(int_pos.z));
 

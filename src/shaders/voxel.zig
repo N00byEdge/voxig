@@ -14,6 +14,7 @@ pub const VoxelShader = struct {
         retval.shader.assertLocation(0, "texture_sampler");
         retval.shader.assertLocation(1, "MVP");
         retval.shader.assertLocation(2, "chunk_pos");
+        retval.shader.assertLocation(3, "int_translation");
 
         retval.shader.use();
         text.bindTo(0);
@@ -32,6 +33,10 @@ pub const VoxelShader = struct {
 
     pub fn chunkPos(self: *const @This(), x: i32, y: i32, z: i32) void {
         zgl.uniform3i(2, x, y, z);
+    }
+
+    pub fn intTranslation(self: *const @This(), x: i32, y: i32, z: i32) void {
+        zgl.uniform3i(3, x, y, z);
     }
 
     pub fn draw(self: *const @This(), mesh: anytype) void {

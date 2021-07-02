@@ -10,17 +10,15 @@ pub fn main() anyerror!void {
     try glfw.init();
     defer glfw.terminate();
 
-    const game_window = glfw.createWindow(
+    var game_window: glfw.Window = undefined;
+    game_window.init(
         config.default_resolution.width,
         config.default_resolution.height,
         "Zig memes",
-        null,
-        null,
     );
-    defer glfw.destroyWindow(game_window);
+    defer game_window.deinit();
 
-    glfw.makeContextCurrent(game_window);
-    glfw.swapInterval(1);
+    game_window.makeContextCurrent();
 
     log.info("Enabling face culling", .{});
     glfw.c.glEnable(glfw.c.GL_CULL_FACE);
@@ -29,8 +27,10 @@ pub fn main() anyerror!void {
     glfw.c.glEnable(glfw.c.GL_DEPTH_TEST);
     glfw.c.glDepthFunc(glfw.c.GL_LESS);
 
-    glfw.pollEvents();
-    _ = glfw.getMouseDelta(game_window);
+    glfw.swapInterval(1);
 
-    try game.loop(game_window);
+    glfw.pollEvents();
+    _ = game_window.getMouseDelta();
+
+    try game.loop(&game_window);
 }
