@@ -37,6 +37,7 @@ pub fn build(b: *Builder) void {
     });
 
     exe.addIncludeDir("/usr/include");
+    exe.addIncludeDir("./external/FastNoiseLite/C/");
 
     exe.linkLibC();
     exe.linkSystemLibrary("gl");

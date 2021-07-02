@@ -4,3 +4,6 @@
 [submodule "external/glm"]
 	path = external/glm
 	url = https://github.com/spx01/glm.git
+[submodule "external/FastNoiseLite"]
+	path = external/FastNoiseLite
+	url = https://github.com/N00byEdge/FastNoiseLite.git
