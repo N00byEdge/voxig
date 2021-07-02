@@ -19,12 +19,11 @@ pub fn loop(game_window: anytype) !void {
 
     var world = try World.init();
     defer world.deinit();
-    world.prepare();
 
     var voxel_shader = try VoxelShader.init(atlas);
     defer voxel_shader.deinit();
 
-    var player = Player.init(&world);
+    var player = try Player.init(&world);
     defer player.deinit();
 
     var cross_shader = try CrossShader.init();

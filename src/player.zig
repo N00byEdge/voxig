@@ -2,6 +2,7 @@ const glm = @import("glm");
 const std = @import("std");
 const config = @import("config");
 
+const Chunk = @import("world/chunk.zig").Chunk;
 const World = @import("world/world.zig").World;
 const VoxelShader = @import("shaders/voxel.zig").VoxelShader;
 
@@ -38,13 +39,19 @@ pub const Player = struct {
 
     camera: glm.Matrix(4) = undefined,
 
-    pub fn init(world: *World) @This() {
-        return .{
+    ref: *Chunk,
+
+    pub fn init(world: *World) !@This() {
+        world.unrefChunk(try world.refChunk(32, 0, 0));
+        return @This(){
             .world = world,
+            .ref = try world.refChunk(0, 0, 0),
         };
     }
 
-    pub fn deinit(self: *@This()) void {}
+    pub fn deinit(self: *@This()) void {
+        self.world.unrefChunk(self.ref);
+    }
 
     fn directionVector(x_dir: f32, z_dir: f32) glm.Vector(3) {
         return glm.Vector(3).init([_]f32{
@@ -154,6 +161,6 @@ pub const Player = struct {
     pub fn drawPlayerView(self: *@This(), shader: *VoxelShader) void {
         shader.camera(self.camera);
         shader.intTranslation(-self.x, -self.y, -self.z);
-        self.world.drawWorld(shader);
+        self.ref.draw(shader);
     }
 };

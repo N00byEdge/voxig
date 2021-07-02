@@ -13,15 +13,19 @@ pub const default_resolution = .{
     .height = 1080,
 };
 
+pub const world = .{
+    .world_inline_chunk_capacity = 1 * 1024 * 1024,
+};
+
 pub const chunk = .{
     // The x, y and z size of each chunk
     .size = 32,
 
     // The number of bytes of mesh data stored in the chunk before going to the heap
-    .mesh_data_inline_capacity = 4096,
+    .mesh_data_inline_capacity = 4 * 1024,
 
     // The number of bytes of block data stored in the chunk before going to the heap
-    .block_data_inline_capacity = 4096,
+    .block_data_inline_capacity = 4 * 1024,
 };
 
 // Controls
