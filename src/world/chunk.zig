@@ -45,34 +45,35 @@ pub const Chunk = struct {
     }
 
     pub fn generateMesh(self: *@This()) !void {
-        var mesh_builder = try ChunkMeshBuilder.init(self.mesh_data_alloc.get(), 2);
+        var mesh_builder = try ChunkMeshBuilder.init(self.mesh_data_alloc.get(), chunk_size * chunk_size * chunk_size);
         errdefer mesh_builder.deinit();
 
-        @import("../blocks/blocks.zig").findBlock(.grass).block_type.addToMesh(.{
-            .mesh = &mesh_builder,
-            .x = 0,
-            .y = 0,
-            .z = 0,
-            .draw_top = true,
-            .draw_bottom = true,
-            .draw_north = true,
-            .draw_south = true,
-            .draw_west = true,
-            .draw_east = true,
-        });
+        var cave = @import("../noise.zig").noise(3).init(8, 0x22);
 
-        @import("../blocks/blocks.zig").findBlock(.barrier).block_type.addToMesh(.{
-            .mesh = &mesh_builder,
-            .x = 2,
-            .y = 0,
-            .z = 0,
-            .draw_top = true,
-            .draw_bottom = true,
-            .draw_north = true,
-            .draw_south = true,
-            .draw_west = true,
-            .draw_east = true,
-        });
+        var x: i32 = 0;
+        while (x < chunk_size) : (x += 1) {
+            var y: i32 = 0;
+            while (y < chunk_size) : (y += 1) {
+                var z: i32 = 0;
+                while (z < chunk_size) : (z += 1) {
+                    const fill = cave.getScaled(x, y, z, 2);
+                    if (1 == fill) {
+                        @import("../blocks/blocks.zig").findBlock(.stone).block_type.addToMesh(.{
+                            .mesh = &mesh_builder,
+                            .x = @intCast(u5, x),
+                            .y = @intCast(u5, y),
+                            .z = @intCast(u5, z),
+                            .draw_top = true,
+                            .draw_bottom = true,
+                            .draw_north = true,
+                            .draw_south = true,
+                            .draw_west = true,
+                            .draw_east = true,
+                        });
+                    }
+                }
+            }
+        }
 
         self.mesh = try mesh_builder.finalize(self.mesh_data_alloc.get());
     }
