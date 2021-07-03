@@ -118,6 +118,48 @@ pub const Chunk = struct {
 
     pub const size = chunk_size;
 
+    pub fn ChunkComparator(comptime NodeType: type) type {
+        return struct {
+            pub fn compare(_: *const @This(), lhs: *const NodeType, rhs: *const NodeType) bool {
+                if (lhs.chunk.x < rhs.chunk.x) return true;
+                if (lhs.chunk.x > rhs.chunk.x) return false;
+
+                if (lhs.chunk.y < rhs.chunk.y) return true;
+                if (lhs.chunk.y > rhs.chunk.y) return false;
+
+                if (lhs.chunk.z < rhs.chunk.z) return true;
+                return false;
+            }
+        };
+    }
+
+    pub fn ChunkFinder(comptime NodeType: type) type {
+        return struct {
+            x: i32,
+            y: i32,
+            z: i32,
+
+            pub fn init(x: i32, y: i32, z: i32) @This() {
+                return .{
+                    .x = x,
+                    .y = y,
+                    .z = z,
+                };
+            }
+
+            pub fn check(self: *const @This(), cn: *const NodeType) bool {
+                if (self.x < cn.chunk.x) return false;
+                if (self.x > cn.chunk.x) return true;
+
+                if (self.y < cn.chunk.y) return false;
+                if (self.y > cn.chunk.y) return true;
+
+                if (self.z < cn.chunk.z) return false;
+                return true;
+            }
+        };
+    }
+
     pub fn init(x: i32, y: i32, z: i32) @This() {
         return @This(){
             .x = x,

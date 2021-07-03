@@ -30,55 +30,17 @@ const ChunkNode = struct {
     }
 };
 
-const ChunkComparator = struct {
-    pub fn compare(_: *const @This(), lhs: *const ChunkNode, rhs: *const ChunkNode) bool {
-        if (lhs.chunk.x < rhs.chunk.x) return true;
-        if (lhs.chunk.x > rhs.chunk.x) return false;
-
-        if (lhs.chunk.y < rhs.chunk.y) return true;
-        if (lhs.chunk.y > rhs.chunk.y) return false;
-
-        if (lhs.chunk.z < rhs.chunk.z) return true;
-        return false;
-    }
-};
-
 const chunk_config = rbtree.Config{
     .augment_callback = null,
-    .comparator = ChunkComparator,
+    .comparator = Chunk.ChunkComparator(ChunkNode),
     .features = chunks_features,
-};
-
-const ChunkFinder = struct {
-    x: i32,
-    y: i32,
-    z: i32,
-
-    pub fn init(x: i32, y: i32, z: i32) @This() {
-        return .{
-            .x = x,
-            .y = y,
-            .z = z,
-        };
-    }
-
-    pub fn check(self: *const @This(), cn: *const ChunkNode) bool {
-        if (self.x < cn.chunk.x) return false;
-        if (self.x > cn.chunk.x) return true;
-
-        if (self.y < cn.chunk.y) return false;
-        if (self.y > cn.chunk.y) return true;
-
-        if (self.z < cn.chunk.z) return false;
-        return true;
-    }
 };
 
 const ChunkTreeType = rbtree.Tree(ChunkNode, "node", chunk_config);
 
 pub const World = struct {
     // Chunk rbtree
-    chunks: ChunkTreeType = ChunkTreeType.init(ChunkComparator{}, undefined),
+    chunks: ChunkTreeType = ChunkTreeType.init(chunk_config.comparator{}, undefined),
 
     // Worldgen noises
     height_noise: Noise(2) = Noise(2).init(7, 0xeffc2cd2),
@@ -96,9 +58,9 @@ pub const World = struct {
     }
 
     fn findLoadedChunk(self: *@This(), x: i32, y: i32, z: i32) ?*ChunkNode {
-        const finder = ChunkFinder.init(x, y, z);
+        const finder = Chunk.ChunkFinder(ChunkNode).init(x, y, z);
 
-        const opt_node = self.chunks.lowerBound(ChunkFinder, &finder);
+        const opt_node = self.chunks.lowerBound(@TypeOf(finder), &finder);
 
         if (opt_node) |chunk_node| {
             if (chunk_node.chunk.x == x and chunk_node.chunk.y == y and chunk_node.chunk.z == z) {
