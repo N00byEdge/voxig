@@ -106,6 +106,13 @@ pub const Chunk = struct {
     mesh: ?ChunkMesh,
     block_ids: [chunk_size][chunk_size][chunk_size]u8,
 
+    adj_west: ?*Chunk = null,
+    adj_east: ?*Chunk = null,
+    adj_above: ?*Chunk = null,
+    adj_below: ?*Chunk = null,
+    adj_north: ?*Chunk = null,
+    adj_south: ?*Chunk = null,
+
     mesh_data_alloc: std.heap.StackFallbackAllocator(config.chunk.mesh_data_inline_capacity),
     //block_data_alloc: std.heap.StackFallbackAllocator(config.chunk.block_data_inline_capacity),
 
@@ -121,6 +128,30 @@ pub const Chunk = struct {
             .mesh_data_alloc = std.heap.stackFallback(config.chunk.mesh_data_inline_capacity, std.heap.page_allocator),
             //.block_data_alloc = std.heap.stackFallback(config.chunk.block_data_inline_capacity, std.heap.page_allocator),
         };
+    }
+
+    pub fn notifyChunkWest(self: *@This(), other: ?*@This()) void {
+        self.adj_west = other;
+    }
+
+    pub fn notifyChunkEast(self: *@This(), other: ?*@This()) void {
+        self.adj_east = other;
+    }
+
+    pub fn notifyChunkNorth(self: *@This(), other: ?*@This()) void {
+        self.adj_north = other;
+    }
+
+    pub fn notifyChunkSouth(self: *@This(), other: ?*@This()) void {
+        self.adj_south = other;
+    }
+
+    pub fn notifyChunkAbove(self: *@This(), other: ?*@This()) void {
+        self.adj_above = other;
+    }
+
+    pub fn notifyChunkBelow(self: *@This(), other: ?*@This()) void {
+        self.adj_below = other;
     }
 
     pub fn setBlock(self: *@This(), x: u5, y: u5, z: u5, block_id: u8) void {

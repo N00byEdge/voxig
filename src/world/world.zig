@@ -105,6 +105,22 @@ pub const World = struct {
         return null;
     }
 
+    fn notify(unchanged: *Chunk, changed: ?*Chunk, firstToSecond: fn (*Chunk, ?*Chunk) void, secondToFirst: fn (*Chunk, ?*Chunk) void) void {
+        firstToSecond(unchanged, changed);
+        if (changed) |started_existing| {
+            secondToFirst(started_existing, unchanged);
+        }
+    }
+
+    fn notifyAdjacentChunks(self: *@This(), x: i32, y: i32, z: i32, changed: ?*Chunk) void {
+        if (self.findLoadedChunk(x + 32, y, z)) |eastern| notify(&eastern.chunk, changed, Chunk.notifyChunkWest, Chunk.notifyChunkEast);
+        if (self.findLoadedChunk(x - 32, y, z)) |western| notify(&western.chunk, changed, Chunk.notifyChunkEast, Chunk.notifyChunkWest);
+        if (self.findLoadedChunk(x, y - 32, z)) |northern| notify(&northern.chunk, changed, Chunk.notifyChunkNorth, Chunk.notifyChunkSouth);
+        if (self.findLoadedChunk(x, y + 32, z)) |southern| notify(&southern.chunk, changed, Chunk.notifyChunkSouth, Chunk.notifyChunkNorth);
+        if (self.findLoadedChunk(x, y, z - 32)) |below| notify(&below.chunk, changed, Chunk.notifyChunkAbove, Chunk.notifyChunkBelow);
+        if (self.findLoadedChunk(x, y, z + 32)) |above| notify(&above.chunk, changed, Chunk.notifyChunkBelow, Chunk.notifyChunkAbove);
+    }
+
     pub fn refChunk(self: *@This(), x: i32, y: i32, z: i32) !*Chunk {
         if (self.findLoadedChunk(x, y, z)) |chunk_node| {
             // Found existing chunk
@@ -123,6 +139,8 @@ pub const World = struct {
 
         self.worldgenChunk(&chunk_node.chunk);
 
+        self.notifyAdjacentChunks(chunk_node.chunk.x, chunk_node.chunk.y, chunk_node.chunk.z, &chunk_node.chunk);
+
         self.chunks.insert(chunk_node);
         return &chunk_node.chunk;
     }
@@ -131,6 +149,7 @@ pub const World = struct {
         const chunk_node = @fieldParentPtr(ChunkNode, "chunk", chunk);
         const new_refcount = @atomicRmw(usize, &chunk_node.refcount, .Sub, 1, .AcqRel) - 1;
         if (new_refcount == 0) {
+            self.notifyAdjacentChunks(chunk_node.chunk.x, chunk_node.chunk.y, chunk_node.chunk.z, null);
             self.chunks.remove(chunk_node);
             chunk_node.deinit();
             self.chunk_allocator.get().destroy(chunk_node);
