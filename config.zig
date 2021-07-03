@@ -13,10 +13,6 @@ pub const default_resolution = .{
     .height = 1080,
 };
 
-pub const world = .{
-    .world_inline_chunk_capacity = 1 * 1024 * 1024,
-};
-
 pub const chunk = .{
     // The x, y and z size of each chunk
     .size = 32,

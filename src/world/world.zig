@@ -8,6 +8,12 @@ const Blocks = @import("../blocks/blocks.zig");
 
 const log = std.log.scoped(.world);
 
+var chunk_allocator = std.heap.GeneralPurposeAllocator(.{
+    .thread_safe = false,
+}){
+    .backing_allocator = std.heap.page_allocator,
+};
+
 const chunks_features = rbtree.Features{
     .enable_iterators_cache = false,
     .enable_kth_queries = false,
@@ -78,16 +84,12 @@ pub const World = struct {
     height_noise: Noise(2),
     cave_noise: Noise(3),
 
-    chunk_allocator: std.heap.StackFallbackAllocator(config.world.world_inline_chunk_capacity),
-
     pub fn init() !@This() {
         return @This(){
             .chunks = ChunkTreeType.init(ChunkComparator{}, undefined),
 
             .height_noise = Noise(2).init(7, 0xeffc2cd2),
             .cave_noise = Noise(3).init(4, 0xbd191214),
-
-            .chunk_allocator = std.heap.stackFallback(config.world.world_inline_chunk_capacity, std.heap.page_allocator),
         };
     }
 
@@ -139,7 +141,7 @@ pub const World = struct {
         }
 
         // Make a new one
-        const chunk_node = try self.chunk_allocator.get().create(ChunkNode);
+        const chunk_node = try chunk_allocator.allocator.create(ChunkNode);
         chunk_node.* = .{
             .chunk = Chunk.init(x, y, z),
         };
@@ -159,7 +161,7 @@ pub const World = struct {
             self.notifyAdjacentChunks(chunk_node.chunk.x, chunk_node.chunk.y, chunk_node.chunk.z, null);
             self.chunks.remove(chunk_node);
             chunk_node.deinit();
-            self.chunk_allocator.get().destroy(chunk_node);
+            chunk_allocator.allocator.destroy(chunk_node);
         }
     }
 
