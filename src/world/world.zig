@@ -57,7 +57,14 @@ const ChunkFinder = struct {
     }
 
     pub fn check(self: *const @This(), cn: *const ChunkNode) bool {
-        return cn.chunk.x >= self.x and cn.chunk.y >= self.y and cn.chunk.z >= self.z;
+        if (self.x < cn.chunk.x) return false;
+        if (self.x > cn.chunk.x) return true;
+
+        if (self.y < cn.chunk.y) return false;
+        if (self.y > cn.chunk.y) return true;
+
+        if (self.z < cn.chunk.z) return false;
+        return true;
     }
 };
 
