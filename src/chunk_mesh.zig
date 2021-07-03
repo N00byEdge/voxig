@@ -72,6 +72,8 @@ pub const ChunkMesh = struct {
     }
 
     pub fn draw(self: *const @This()) void {
+        if (self.num == 0)
+            return;
         self.vao.bind();
         gl.glDrawArraysInstanced(gl.GL_TRIANGLES, 0, 6, @intCast(gl.GLsizei, self.num));
     }
