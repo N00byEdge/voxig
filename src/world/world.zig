@@ -78,19 +78,14 @@ const ChunkTreeType = rbtree.Tree(ChunkNode, "node", chunk_config);
 
 pub const World = struct {
     // Chunk rbtree
-    chunks: ChunkTreeType,
+    chunks: ChunkTreeType = ChunkTreeType.init(ChunkComparator{}, undefined),
 
     // Worldgen noises
-    height_noise: Noise(2),
-    cave_noise: Noise(3),
+    height_noise: Noise(2) = Noise(2).init(7, 0xeffc2cd2),
+    cave_noise: Noise(3) = Noise(3).init(4, 0xbd191214),
 
     pub fn init() !@This() {
-        return @This(){
-            .chunks = ChunkTreeType.init(ChunkComparator{}, undefined),
-
-            .height_noise = Noise(2).init(7, 0xeffc2cd2),
-            .cave_noise = Noise(3).init(4, 0xbd191214),
-        };
+        return @This(){};
     }
 
     pub fn deinit(self: *@This()) void {
